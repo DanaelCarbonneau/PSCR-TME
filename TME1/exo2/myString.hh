@@ -19,6 +19,8 @@ namespace pr{
         mString(const char* st);
         /*Constructeur sans argument (cas d'une déclaration sans affectation)*/
         mString();
+        /*Constructeur par copie*/
+        mString(const mString & ms);
         size_t length();
 
         ~mString(){

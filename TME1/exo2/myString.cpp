@@ -24,6 +24,9 @@ namespace pr{
      *car on sait que pour tous les objets de la classe, str est alloué dynamiquement sur le tas)*/
     mString::mString(const char* ori){str = newcopy(ori);}   
     mString::mString(){str = nullptr;} 
+    mString::mString(const mString & ms){
+        str = newcopy(ms.str);
+    }
 
     size_t mString::length(){
         return pr::length(str);
