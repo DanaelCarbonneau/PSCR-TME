@@ -2,22 +2,8 @@
 #include <fstream>
 #include <regex>
 #include <chrono>
-#include "Hashtable.hpp"
+#include <unordered_map>
 using namespace std;
-
-
-/*Partie 1*/
-
-/*Fonction qui ajoute un mot s au tableau de fréquences tab*/
-void ajouteMotVect(std::vector<std::pair<string,int>> &tab, const string& s){
-	for(size_t i = 0; i < tab.size() ; i++){
-		if( tab[i].first==s ){
-			++tab[i].second;
-			return;
-		}
-	}
-	tab.push_back(make_pair(s,1));	//On ne l'a pas trouvé dans le tableau
-}
 
 /*Fonction qui retourne le nombre d'occurences de s dans le texte dont les fréquences sont contenues dans tab*/
 int nbOccurenceMot(const std::vector<std::pair<string,int>> &tab, const string& s){
@@ -32,6 +18,7 @@ int nbOccurenceMot(const std::vector<std::pair<string,int>> &tab, const string& 
 
 
 
+
 int main () {
 
 	using namespace std::chrono;
@@ -40,11 +27,7 @@ int main () {
 
 	auto start = steady_clock::now();
 
-	/*Partie 1*/
-	std::vector<std::pair<string,int>> tab;
-
-	/*Partie 2*/
-	pr::Hashtable<string,int> htab (30000);
+	std::unordered_map htab = unordered_map<string,int>();
 
 	cout << "Parsing War and Peace" << endl;
 
@@ -65,12 +48,12 @@ int main () {
 
 		/*Partie 2*/
 
-		int* word_count = htab.get(word);
-		if (word_count != nullptr){
-			++(*word_count);
+		auto word_count = htab.find(word);
+		if (word_count != htab.end()){
+			++(word_count->second);
 		}
 		else {
-			htab.put(word,1);		//Ajoute l'entrée à la table de hachage (il y a une occurence actuellement)
+			htab.emplace(word,1);		//Ajoute l'entrée à la table de hachage (il y a une occurence actuellement)
 		}
 
 		// word est maintenant "tout propre"
@@ -81,28 +64,35 @@ int main () {
 	}
 	input.close();
 
+/*Trier le nombre d'occurences, itérateur à utiliser donc utiliser la hmap de la lib standard*/
 
-/* Partie 1 */
-/*
+	std::vector<pair<string,int>> tab;
+
+	for (auto it : htab){
+		tab.push_back(pair(it.first,it.second));
+	}
+
+	std::sort(tab.begin(),tab.end(), [] (const pair<string,int> & a, const pair<string,int> & b) { return a.second > b.second ; });
+
+	
 	cout << "Amount of different words " << tab.size()<<endl;
 	cout << "Occurences of \"war\" : " << nbOccurenceMot(tab,"war") << endl;
 	cout << "Occurences of \"peace\" : " << nbOccurenceMot(tab,"peace") << endl;
 	cout << "Occurences of \"toto\" : " << nbOccurenceMot(tab,"toto") << endl;
- */
-/* Partie 2 */
-	cout << "Amount of different words " << htab.size()<<endl;
-	cout << "Occurences of \"war\" : " <<  (htab.get("war") ? *htab.get("war") : 0) << endl;
-	cout << "Occurences of \"peace\" : " << (htab.get("peace") ? *htab.get("peace") : 0) << endl;
-	cout << "Occurences of \"toto\" : " << (htab.get("toto") ? *htab.get("toto") : 0) << endl;
-
-	cout << "Finished Parsing War and Peace" << endl;
+	
+	cout << "\nFinished Parsing War and Peace" << endl;
 
 	auto end = steady_clock::now();
     cout << "Parsing took "
               << duration_cast<milliseconds>(end - start).count()
               << "ms.\n";
 
-	cout << "Found a total of " << nombre_lu << " words." << endl;	
+	cout << "Found a total of " << nombre_lu << " words." << endl; 
+
+
+	
+
+
 
     return 0;
 }
