@@ -26,44 +26,45 @@ class Hashtable{
         size_t index;
 
         void advance(){
-            cout << "On commence à avancer" <<endl;
             ++index;
-            if(index > it_buckets.size()){
-                /*On est à la fin !*/
-                index = -1;
-                lit = it_buckets[0].end();
-            }
-            else{
-                if (!(it_buckets[index].empty())){
-                     for(; index < it_buckets.size(); index++){
+                if (index >= it_buckets.size()){
+                    index = -1;
+                    lit = it_buckets[0].end();
+                }
+                else if ((it_buckets[index].empty())){
+                     for(; index < it_buckets.size(); ++index){
                         if (!it_buckets[index].empty()){
-                            cout << "On sort" << endl;
                             lit = it_buckets[index].begin(); //On re positionne notre itérateur de liste au début de la suivante
                             return;
                         }
-                        cout << "On est toujours sur une case vide d'index " << index << endl;
                     }
                     if (index == it_buckets.size()){
-                        cout << "On est à la fin : " <<index <<endl;
                         index = -1;
                         lit = it_buckets[0].end();
                     }
-                }
-            }
+                }          
            
         }        
         public :
         Iterator(Hashtable &ht):it_buckets(ht.bucket),index(0){
-            advance();      //On va vers le début dans la hashtable
+            if (it_buckets[index].empty()){
+                advance();
+            }
+            else{
+                lit = it_buckets[index].begin();
+            }
+
         }
         Iterator(Hashtable &ht, int end):it_buckets(ht.bucket){  //Constructeur d'un itérateur end
-            cout <<"Ici on fait un end" << endl;
             index = -1;
             lit = it_buckets[0].end();
         }   
         Iterator& operator++(){
-            if(++lit== it_buckets[index].end()){
+            if(lit == it_buckets[index].end()){
                 advance();
+            }
+            else{
+                ++lit;
             }
             return *this;
         }
@@ -71,7 +72,7 @@ class Hashtable{
             return *lit;
         }
         bool operator!=(Iterator& other){
-            return index != other.index;      //Faux mais permet de voir si le test est effectué
+            return (index != other.index) || (lit != other.lit);    
         }
     };
 

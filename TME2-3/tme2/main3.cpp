@@ -120,7 +120,7 @@ int main () {
 
 	cout << "Finished Parsing War and Peace" << endl;
 
-    cout << "Nombre d'éléments dans la table de hachage : " << count(htab.begin(),htab.end());
+    cout << "Nombre d'éléments dans la table de hachage : " << count(htab.begin(),htab.end()) <<endl ;
 	auto end = steady_clock::now();
     cout << "Parsing took "
               << duration_cast<milliseconds>(end - start).count()
