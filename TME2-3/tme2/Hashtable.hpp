@@ -91,6 +91,9 @@ class Hashtable{
     public :
     Hashtable(size_t szb) : bucket(szb){
         sz = 0;
+        for (int i = 0 ; i < sz; ++i){
+            bucket.push_back(std::forward_list<Entry>());
+        }
     }
     // (Les mécanismes de la classe canonique sont implémentés par défaut par le compilateur, pas besoin de les réécrire.)
 
