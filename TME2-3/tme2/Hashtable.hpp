@@ -17,6 +17,7 @@ class Hashtable{
         const K key;
         V value;
         Entry(const K& key, const V& value):key(key), value(value){}
+        
     };
     typedef std::vector <std::forward_list<Entry>> buckets_t;
 
@@ -25,6 +26,10 @@ class Hashtable{
         typename std::forward_list<Entry>::iterator lit;
         size_t index;
 
+
+        /*Le problème de comptage semble se trouver dans la fonction d'avancer qui fait qu'on prend en compte plusieurs
+        fois le même élément*/
+        /*Voir pour une gestion + fine des différents cas ?*/
         void advance(){
             ++index;
                 if (index >= it_buckets.size()){
@@ -65,6 +70,9 @@ class Hashtable{
             }
             else{
                 ++lit;
+                if(lit == it_buckets[index].end()){
+                    advance();
+            }
             }
             return *this;
         }
@@ -128,4 +136,6 @@ class Hashtable{
     /*Fonction qui indique la taille de la hashtable (nombre d'entrées effectives dedans)*/
     size_t size() const{return sz;}
     };
+
+    
 }
