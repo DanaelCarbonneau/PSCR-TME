@@ -29,7 +29,8 @@ class Hashtable{
 
         /*Le problème de comptage semble se trouver dans la fonction d'avancer qui fait qu'on prend en compte plusieurs
         fois le même élément*/
-        /*Voir pour une gestion + fine des différents cas ?*/
+        /*Voir pour une gestion + fine des différents cas ?
+        Ne fonctionne pas, voir correction sans le advance.*/
         void advance(){
             ++index;
                 if (index >= it_buckets.size()){
@@ -51,6 +52,7 @@ class Hashtable{
            
         }        
         public :
+        /*Version qui ne marche pas
         Iterator(Hashtable &ht):it_buckets(ht.bucket),index(0){
             if (it_buckets[index].empty()){
                 advance();
@@ -60,12 +62,21 @@ class Hashtable{
             }
 
         }
+        */ 
+
+       /*Correction*/
+
+       Iterator(size_t index, typename std::forward_list<Entry>::iterator lit, buckets_t & buck):index(index),lit(lit),it_buckets(buck){}
         Iterator(Hashtable &ht, int end):it_buckets(ht.bucket){  //Constructeur d'un itérateur end
             index = -1;
             lit = it_buckets[0].end();
         }   
+
+        /*
+
+        Tentative qui ne marche pas
         Iterator& operator++(){
-/*Problème ici*/
+Problème ici
             if(lit == it_buckets[index].end()){
                 advance();
                 
@@ -81,6 +92,20 @@ class Hashtable{
             }
             return *this;
         }
+    */
+        Iterator & operator++(){
+            ++lit;
+            if (lit == it_buckets[index].end()){
+                index++;
+                for ( ; index < it_buckets.size()&& it_buckets[index].empty();++index){
+                    /*NOP*/
+                }
+                if (index < it_buckets.size()) lit = it_buckets[index].begin();
+            }
+            return *this;
+        }
+
+
         Entry& operator*(){
             return *lit;
         }
@@ -104,12 +129,24 @@ class Hashtable{
 
     /*Fonctions pour l'itérateur*/
 
+/*Version qui ne marche pas
     Iterator begin(){
         return Iterator(*this);
     }
+*/
+/*Correction*/
+
+    Iterator begin(){
+        for(int index = 0; index < bucket.size(); ++index ){
+            if (!bucket[index].empty){
+                return Iterator(index,bucket[index].begin(),bucket);
+            }
+        }
+        return end();
+    }
 
     Iterator end(){
-        return Iterator(*this,1);
+        return Iterator(bucket.size(),bucket[0].end(),bucket);//On prend bucket[0].end() pour un nullptr
     }
 
     /*Fonction qui rend l'adresse de la valeur associée à la clé key si on la trouve, nullptr sinon*/
