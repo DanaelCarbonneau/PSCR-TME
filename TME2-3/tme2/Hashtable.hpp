@@ -4,7 +4,7 @@
 
 /*Boucle infinie avec les itérateurs ?
 TODO : voir pas à pas l'exécution du code pour voir pourquoi l'itérateur boucle vers l'infini*/
-
+/*essayer de faire avec un itérateur sur le vecteur plutôt qu'un index*/
 using namespace std;
 namespace pr {
 
@@ -65,14 +65,19 @@ class Hashtable{
             lit = it_buckets[0].end();
         }   
         Iterator& operator++(){
+/*Problème ici*/
             if(lit == it_buckets[index].end()){
                 advance();
+                
+                if(lit!= it_buckets[index].end()){
+                    ++lit;
+                }
             }
             else{
                 ++lit;
                 if(lit == it_buckets[index].end()){
                     advance();
-            }
+                }
             }
             return *this;
         }
