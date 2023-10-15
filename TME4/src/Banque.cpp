@@ -41,14 +41,12 @@ size_t Banque::size() const {
 bool Banque::comptabiliser (int attendu) const {
 	//unique_lock<recursive_mutex> g(m);		Réponse de la question 9
 
-	vector<reference_wrapper<recursive_mutex>> verrou_cases;
 
 	int bilan = 0;
 	int id = 0;
 	for (const auto & compte : comptes) {				//Les comptes sont parcourus dans l'ordre, on est 
 //														//donc assurés par rapport aux deadlocks.
 		compte.getMutex().lock();						//On prend le verrou sur le compte.
-		verrou_cases[id] = ref(compte.getMutex());		//On garde le verrou dans un tableau pour pouvoir unlock.
 		if (compte.getSolde() < 0) {
 			cout << "Compte " << id << " en négatif : " << compte.getSolde() << endl;
 		}
@@ -59,8 +57,8 @@ bool Banque::comptabiliser (int attendu) const {
 		cout << "Bilan comptable faux : attendu " << attendu << " obtenu : " << bilan << endl;
 	}
 
-	for (auto & verrou : verrou_cases){
-		verrou.get().unlock();				//On déverrouille tous les verrous
+	for (const auto & compte : comptes){
+		compte.getMutex().unlock();				//On déverrouille tous les verrous
 	}
 	return bilan == attendu;
 }

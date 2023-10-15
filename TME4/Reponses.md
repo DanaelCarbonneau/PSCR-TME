@@ -41,9 +41,4 @@ Il ne le serait pas toujours avec les synchronisations actuelles. Posons une sit
 En ajoutant un mutex dans sur la banque, on s'assure que personne n'accède à la banque tant que le comptable fait ses comptes : cela ralentit le programme fortement (chaque comptable bloque tout le monde en faisant sa boucle, on perd beaucoup en parallélisme).
 
 ### Question 10 : 
-Une solution serait de prendre les locks de toutes les cases que le comptabilisateur visite (et de toutes les libérer à la fin de son parcourt). Il faut absolument s'assurer de l'ordre (ordre sur les indices).
-
-
-# TODO 
-
-Résoudre les problèmes de segmentation fault de la question 10.
+Une solution serait de prendre les locks de toutes les cases que le comptabilisateur visite (et de toutes les libérer après la fin du parcourt). De cette manière, on s'assure qu'aucune transaction ne peut rendre caduque la somme partielle réalisée sur le tableau de comptes. Il faut absolument s'assurer de l'ordre (ordre sur les indices) pour éviter les deadlock.
