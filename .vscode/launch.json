@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/cyranhoe/Documents/Master/S1/PSCR/PSCR-TME/TME4/src",
-      "program": "/home/cyranhoe/Documents/Master/S1/PSCR/PSCR-TME/TME4/src/build/Debug/outDebug",
+      "cwd": "/home/cyranhoe/Documents/Master/S1/PSCR/PSCR-TME/TME5/src",
+      "program": "/home/cyranhoe/Documents/Master/S1/PSCR/PSCR-TME/TME5/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
