@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "rsleep.h"
 
+/*Fait dormir la durée qu'on veut*/
 void randsleep() {
   int r = rand();
   double ratio = (double)r / (double) RAND_MAX;
