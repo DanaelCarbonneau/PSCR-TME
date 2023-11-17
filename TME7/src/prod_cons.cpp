@@ -23,7 +23,16 @@ void consomateur (Stack<char> * stack) {
 }
 
 int main () {
-	Stack<char> * s = new Stack<char>();
+
+	/* TODO
+	*À mettre dans un segment de mémoire partagé (anonyme)
+	qui prend l'adresse 
+	* Construire la stak dans la mémoire partagée
+	* syntaxe  : 
+		new (adresse choisie plutôt qu'un malloc) Constructeur (args)
+	*/
+
+	Stack<char> * s = new  (addr) Stack<char>();
 
 	pid_t pp = fork();
 	if (pp==0) {
