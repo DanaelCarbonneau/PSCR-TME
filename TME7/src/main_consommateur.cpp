@@ -4,18 +4,11 @@
 #include <sys/wait.h>
 #include <vector>
 #include <sys/mman.h>
+#include <fcntl.h>
 
 
 using namespace std;
 using namespace pr;
-
-void producteur (Stack<char> * stack) {
-	cout << "Je suis un producteur";
-	char c ;
-	while (cin.get(c)) {
-		stack->push(c);
-	}
-}
 
 void consomateur (Stack<char> * stack) {
 	while (true) {
@@ -23,6 +16,14 @@ void consomateur (Stack<char> * stack) {
 		cout << c << flush ;
 	}
 }
+
+
+void handler(int sig){
+    cout << "Je suis le consommateur " << getpid() <<" et je m'arrête proprement" << endl;
+
+    exit(0);
+}
+
 
 int main () {
 
@@ -36,27 +37,29 @@ int main () {
 
 	size_t len = sizeof(Stack<char>);
 
-	void * addr = mmap(nullptr,len, PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
 
 
-	Stack<char> * s = new  (addr) Stack<char>();
+    int fd = shm_open("/myshm",O_RDWR,0666);
 
-	pid_t pp = fork();
-	if (pp==0) {
-		producteur(s);
-		return 0;
-	}
 
-	pid_t pc = fork();
-	if (pc==0) {
-		consomateur(s);
-		return 0;
-	}
+	void * addr = mmap(nullptr,len, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
-	wait(0);
-	wait(0);
 
-	
+	Stack<char> * s = (Stack<char> *) addr;
+
+    /*Gestion du signal*/
+
+    struct sigaction sa;
+    sigfillset(&sa.sa_mask);
+    sa.sa_handler = &handler;
+    sa.sa_flags = 0;
+
+    sigaction(SIGINT, &sa, NULL);
+
+
+	consomateur(s);
+
+
 	munmap(addr,len);
 	return 0;
 }
