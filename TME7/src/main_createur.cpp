@@ -28,6 +28,10 @@ int main () {
 
 	void * addr = mmap(nullptr,len, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
+    if (addr == MAP_FAILED){
+        perror("mmap failed");
+    }
+
     
 	Stack<char> * s = new  (addr) Stack<char>();
 
