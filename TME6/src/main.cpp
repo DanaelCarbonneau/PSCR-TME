@@ -18,6 +18,7 @@ invoquez-la dans le corps des deux ls.*/
 #include "rsleep.h"
 
 int pdv = 3;
+bool mort = false;
 
 /*Handler du signal*/
 void perdrePdv(int){        //Respecter la signature des handler
@@ -26,6 +27,7 @@ void perdrePdv(int){        //Respecter la signature des handler
 
     if (pdv==0){//mort du processus
         std::cout << "Je meurs !" << std::endl;
+        mort = true;
     }
 }
 
@@ -40,7 +42,7 @@ void attaque (pid_t adversaire){
 }
 
 void defense(){
-    /*Désarmer le signal en posant son sigation à SIGIN*/
+    /*Désarmer le signal en posant son sigation à SIGINT*/
     struct sigaction sa = {0};
     sa.sa_handler = SIG_IGN ;       //routine qui fait ignorer le signal
     sigaction(SIGINT, &sa, NULL);
@@ -50,13 +52,25 @@ void combat(pid_t adversaire){
     while(1){
         defense();
         attaque(adversaire);
+        if (mort){
+            return ;        //On retourne dans le main pour mourir proprement
+        }
     }
 }
 
 /*Voir comment faire les appels avec une situation père fils*/
 int main(){
-    pid_t Eteocle = fork();
-    if (Eteocle != 0){      //Code du père
-        pid_t Polynice = fork();
+
+    pid_t vador = getpid();     //On récupère le pid du père
+
+    pid_t luke = fork();
+
+    if (luke == 0){// processus fils
+        combat(vador);
+        exit(1);        //Si on meurt quand on n'a rien à faire, on peut juste faire exit
     }
+    //processus père
+    combat(luke);   
+    wait(NULL);         //Si on meurt, on attend le fils
+
 }
