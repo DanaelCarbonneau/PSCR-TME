@@ -194,7 +194,6 @@ int main () {
 	pool.start(2);
 
 
-	/*voir Vyslon*/
 
 	pool.stop();
 

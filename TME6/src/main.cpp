@@ -50,8 +50,9 @@ void defense(){
 
 void combat(pid_t adversaire){
     while(1){
+                attaque(adversaire);
+
         defense();
-        attaque(adversaire);
         if (mort){
             return ;        //On retourne dans le main pour mourir proprement
         }
@@ -62,7 +63,6 @@ void combat(pid_t adversaire){
 int main(){
 
     pid_t vador = getpid();     //On récupère le pid du père
-
     pid_t luke = fork();
 
     if (luke == 0){// processus fils
